@@ -1,1 +1,1 @@
-# Whole-exome-sequencing-tutorial
+# Whole-exome-sequencing tutorial
