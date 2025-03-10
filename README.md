@@ -4,7 +4,7 @@ The pipeline demonstrates the successful identification of a novel pathogenic va
 
 # Table of Contents
 
-Overview
+Overview/
 System Requirements
 Installation
 Directory Structure
