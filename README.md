@@ -12,3 +12,6 @@ The pipeline demonstrates the successful identification of a novel pathogenic va
 6. Usage
 7. Example Analysis
 8. Validation
+
+# Overview
+This pipeline implements the WES workflow used in identifying the novel c.871G>C (p.Gly291Arg) variant in the SLC19A3 gene, as described in "Early Infantile Thiamine Transporter-2 Deficiency with Epileptic Spasms—A Phenotypic Spectrum with a Novel Mutation" (Mishra et al., 2021). The workflow enables sensitive detection of rare pathogenic variants in clinical samples, with particular emphasis on homozygous variants in consanguineous families.
