@@ -4,11 +4,11 @@ The pipeline demonstrates the successful identification of a novel pathogenic va
 
 # Table of Contents
 
-Overview/
-System Requirements
-Installation
-Directory Structure
-Pipeline Components
-Usage
-Example Analysis
-Validation
+1. Overview
+2. System Requirements
+3. Installation
+4. Directory Structure
+5. Pipeline Components
+6. Usage
+7. Example Analysis
+8. Validation
