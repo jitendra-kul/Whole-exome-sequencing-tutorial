@@ -1,6 +1,6 @@
 # A Standardized Workflow for Pathogenic Variant Identification
-This repository contains a production-grade bioinformatics workflow for clinical whole exome sequencing (WES) analysis.
-The pipeline demonstrates the successful identification of a novel pathogenic variant in _SLC19A3_ causing thiamine transporter-2 deficiency.
+
+This pipeline implements the WES workflow used in identifying the novel c.871G>C (p.Gly291Arg) variant in the _SLC19A3_ gene, as described in "Early Infantile Thiamine Transporter-2 Deficiency with Epileptic Spasms—A Phenotypic Spectrum with a Novel Mutation" (Mishra et al., 2021), I am a co-author in this paper. The workflow enables sensitive detection of rare pathogenic variants in clinical samples, with particular emphasis on homozygous variants in consanguineous families.
 
 # Table of Contents
 
@@ -14,7 +14,6 @@ The pipeline demonstrates the successful identification of a novel pathogenic va
 8. Validation
 
 # Overview
-This pipeline implements the WES workflow used in identifying the novel c.871G>C (p.Gly291Arg) variant in the _SLC19A3_ gene, as described in "Early Infantile Thiamine Transporter-2 Deficiency with Epileptic Spasms—A Phenotypic Spectrum with a Novel Mutation" (Mishra et al., 2021), I am a co-author in this paper. The workflow enables sensitive detection of rare pathogenic variants in clinical samples, with particular emphasis on homozygous variants in consanguineous families.
 
 # System Requirements
 
