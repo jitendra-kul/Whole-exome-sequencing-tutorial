@@ -54,7 +54,7 @@ Generates HTML reports for quality visualization
 ```bash
 # Align reads to reference genome
 bwa mem -t 12 -v 1 /$HGDATA/hg19/hg19.fa -M -R "@RG\tID:Patient\tPL:illumina\tSM:SGRH" "$outdir"/*R1*.gz "$outdir"/*R2*.gz > "$outdir"/RAW_fastq_mem.sam
-
+```
 Uses BWA-MEM algorithm to align paired-end reads to hg19 reference genome
 
 -t 12 uses 12 threads for faster processing
@@ -64,7 +64,7 @@ Uses BWA-MEM algorithm to align paired-end reads to hg19 reference genome
 -R adds read group information (required for GATK)
 
 Output is in SAM format
-```
+
 
 ### 4. Post-Alignment Processing
 
