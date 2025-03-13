@@ -26,8 +26,9 @@ Hardware Requirements
 ## Exome Sequencing Pipeline
 
 This pipeline processes whole exome sequencing data from raw reads to variant calling.
+### 1. Set up and configuration
 
-### Quality Control Step
+### 2. Quality Control Step
 
 ```bash
 # Count reads in fastq files
@@ -82,6 +83,13 @@ samtools index RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup.bam
 # Clean up SAM files to save disk space
 rm -f *.sam
 ```
+Filters out multimapped reads (improves specificity)
+
+Sorts reads by genomic coordinates
+
+Converts SAM to compressed BAM format
+
+Creates index for random access to BAM file
 
 ### 5. GATK Pre-processing for Improved Accuracy
 ```bash
@@ -91,6 +99,11 @@ java -Xmx8g -jar /$PACKAGE/GATK/GenomeAnalysisTK.jar -nt 4 -T RealignerTargetCre
 # Perform local realignment around indels
 java -Xmx8g -jar /$PACKAGE/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R /$HGDATA/hg19/hg19.fa -I RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup.bam -targetIntervals intervalsList.intervals -known /$RESOURCES/variant_calling_data/1000g_gold_standard.indels.hg19.sites.vcf -o RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup_realigned.bam --filter_bases_not_stored
 ```
+RealignerTargetCreator identifies regions needing realignment (usually around indels)
+
+IndelRealigner performs local realignment to minimize mismatches around indels
+
+Reduces false positive variant calls, especially around indels
 
 ### 6. Base Quality Score Recalibration (BQSR)
 ```bash
@@ -100,11 +113,25 @@ java -Xmx8g -jar /$PACKAGE/GATK/GenomeAnalysisTK.jar -I RAW_fastq_mem_multimappe
 # Apply recalibration
 java -Xmx8g -jar /$PACKAGE/GATK//GenomeAnalysisTK.jar -T PrintReads -R /$HGDATA/hg19/hg19.fa -I RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup_realigned.bam -BQSR RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup_realigned.bam.pre.recal.table -o RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup_realigned_recal.bam
 ```
+BaseRecalibrator adjusts quality scores using machine learning based on known variants
+
+PrintReads applies these adjustments to create a new BAM file
+
+Improves accuracy of variant calling by correcting systematic errors in base quality scores
+
 ### 7. Variant Calling with HaplotypeCaller
 ```bash
 # Call variants using HaplotypeCaller
 java -Xmx8g -jar /$PACKAGE/GATK/GenomeAnalysisTK.jar -T HaplotypeCaller -R /$HGDATA/hg19/hg19.fa -I RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup_realigned_recal.bam -o RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup_realigned_recal.bam.HC.vcf --genotyping_mode DISCOVERY -stand_emit_conf 10 -stand_call_conf 30
 ```
+Uses GATK's HaplotypeCaller to identify SNPs and indels
+
+Creates local haplotypes to improve variant calling accuracy
+
+Sets confidence thresholds for variant emission (10) and calling (30)
+
+Outputs a VCF file with raw variant calls
+
 ### 8. Variant Quality Score Recalibration (VQSR) - SNPs
 ```bash
 # Build recalibration model for SNPs
@@ -113,6 +140,14 @@ java -Xmx4g -jar /$PACKAGE/GATK/GenomeAnalysisTK.jar -T VariantRecalibrator -R /
 # Apply recalibration to SNPs
 java -Xmx8g -jar /$PACKAGE/GATK/GenomeAnalysisTK.jar -T ApplyRecalibration -R /$HGDATA/hg19/hg19.fa --input RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup_realigned_recal.bam.HC.vcf --mode SNP --ts_filter_level 99.0 -recalFile recalibrate_SNP.tranches.recal -tranchesFile recalibrate_SNP.tranches -o RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup_realigned_recal_snps_raw_indels.vcf
 ```
+VariantRecalibrator builds a Gaussian mixture model based on known variants (HapMap, 1000G)
+
+Uses multiple annotation metrics (QD, DP, MQ, etc.) to assess variant quality
+
+ApplyRecalibration applies this model to filter SNPs with 99% sensitivity threshold
+
+Separates high-quality variants from potential false positives
+
 ### 9. Variant Quality Score Recalibration (VQSR) - Indels
 ```bash
 # Build recalibration model for indels
@@ -121,3 +156,8 @@ java -Xmx8g -jar /$PACKAGE/GATK/GenomeAnalysisTK.jar -T VariantRecalibrator -R /
 # Apply recalibration to indels
 java -Xmx8g -jar /$PACKAGE/GATK/GenomeAnalysisTK.jar -T ApplyRecalibration -R /$HGDATA/hg19/hg19.fa --input RAW_fastq_mem_multimapped_unmapped_filtered_sorted_rmdup_realigned_recal_snps_raw_indels.vcf --mode INDEL --ts_filter_level 99.0 -recalFile recalibrate_INDEL.tranches.recal -tranchesFile recalibrate_INDEL.tranches -o recalibrated_SNP_indels.vcf
 ```
+Similar to SNP recalibration but tailored for indels
+
+Uses fewer Gaussians (4) since indel metrics have different distributions
+
+Produces a final VCF with high-quality SNPs and indels
