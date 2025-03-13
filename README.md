@@ -4,15 +4,6 @@ This pipeline implements the WES workflow used in identifying the novel c.871G>C
 
 # Table of Contents
 
-1. Overview
-2. System Requirements
-3. Installation
-4. Directory Structure
-5. Pipeline Components
-6. Usage
-7. Example Analysis
-8. Validation
-
 # Overview
 
 # System Requirements
