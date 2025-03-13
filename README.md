@@ -19,9 +19,6 @@ This pipeline implements the WES workflow used in identifying the novel c.871G>C
 # System Requirements
 Hardware Requirements
 
-#WES Pipeline
-
-#Quality Control (QC) of Raw Data
 
 ## Exome Sequencing Pipeline
 
